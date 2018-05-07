@@ -101,7 +101,7 @@ Hello World! I am Stranger
 Hello World! I am phper
 ```
 
-    为了官方的nginx配置是否正确，我将 www/guesser/ 改成了 www/ ，也就是将 www/guesser/ 下的所有文件（含目录）整体平移出guesser目录，然后更改nginx配置为：
+    为了验证yaf官方的nginx配置是否正确，我将 www/guesser/ 改成了 www/ ，也就是将 www/guesser/ 下的所有文件（含目录）整体平移出guesser目录，然后更改nginx配置为：
 ```nginx
 server {
 #...
