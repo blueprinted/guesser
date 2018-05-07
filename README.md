@@ -52,4 +52,51 @@ drwxr-xr-x  3 www  staff   96  5  8 01:49 conf
 -rw-r--r--  1 www  staff  174  5  8 01:49 index.php
 -rw-r--r--  1 www  staff  446  5  8 01:49 readme.txt
 ```
+    对于nginx服务器，由于yaf框架的直接放在web站的根目录 www/ ，yaf官网是这么配置的：
+```nginx
+server {
+  listen ****;
+  server_name  domain.com;
+  root   document_root;
+  index  index.php index.html index.htm;
 
+  if (!-e $request_filename) {
+    rewrite ^/(.*)  /index.php/$1 last;
+  }
+}
+```
+    与yaf官网情况不同，这个项目是放在web站根目录 www/ 的下一级目录 www/guesser/ ，因此，照抄配置是不行的（经过验证确实不行），经过尝试并验证，以下两种配置都可以生效
+```nginx
+server {
+#...
+    location /guesser {
+        root html;
+        index index.php;
+        try_files $uri $uri/ /guesser/index.php;
+    }
+#...
+}
+```
+```nginx
+server {
+#...
+    location /guesser {
+        root html;
+        index index.php;
+        if (!-e $request_filename) {
+            rewrite ^/(.*)  /guesser/index.php last;
+        }
+    }
+#...
+}
+```
+    参照这个例子，稍加修改配置，可以将框架放置在相对于web根目录的任意深度的目录。
+
+    浏览器访问 http://127.0.0.1/guesser/ 面输出
+```html
+Hello World! I am Stranger
+```
+    浏览器访问 http://127.0.0.1/guesser/index/index/index/name/phper 页面输出
+```html
+Hello World! I am phper
+```
