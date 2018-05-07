@@ -100,3 +100,42 @@ Hello World! I am Stranger
 ```html
 Hello World! I am phper
 ```
+
+    为了官方的nginx配置是否正确，我将 www/guesser/ 改成了 www/ ，也就是将 www/guesser/ 下的所有文件（含目录）整体平移出guesser目录，然后更改nginx配置为：
+```nginx
+server {
+#...
+    location / {
+        root   html;
+        index  index.html index.htm index.php;
+        if (!-e $request_filename) {
+            rewrite ^/(.*)  /index.php/$1 last;
+        }
+    }
+#...
+}
+```
+    然后浏览器访问 http://127.0.0.1/ 正常输出
+    访问 http://127.0.0.1/index 报500错误
+    访问 http://127.0.0.1/index/index/index/name/phper 报500错误
+    更改 nginx 配置为：
+
+```nginx
+server {
+#...
+    location / {
+        root   html;
+        index  index.html index.htm index.php;
+        if (!-e $request_filename) {
+            rewrite ^/(.*)  /index.php last;
+        }
+    }
+#...
+}
+```
+    然后浏览器访问 http://127.0.0.1/ 正常输出
+    访问 http://127.0.0.1/index 正常输出
+    访问 http://127.0.0.1/index/index/index/name/phper 正常输出
+    难道yaf官网配置有误？ 不知道咋解释...
+  
+
